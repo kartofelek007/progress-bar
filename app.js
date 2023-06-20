@@ -40,9 +40,5 @@ const sources = [
         DOM.text.innerText = `${progressAll.toFixed(2)}% (${bytesLoadedAll.toFixed(2)} / ${bytesAll.toFixed(2)} bytes)`
     }
     await loader.init()
-    try {
-        await loader.startLoading();
-    } catch(err) {
-        console.log(err);
-    }
+    await loader.startLoading();
 })();
