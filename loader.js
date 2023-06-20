@@ -70,6 +70,7 @@ export class LoadImages {
                 const img = new Image();
                 img.src = url;
                 this.onLoadImage({
+                    img,
                     url,
                     bytesLoaded: event.loaded,
                     bytesLoadedAll : this.sizeActual,

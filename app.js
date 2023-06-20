@@ -6,6 +6,17 @@ const sources = [
     "images/Free Creative Business Flatlay by Burst_05.jpg",
     "images/Free Creative Business Flatlay by Burst_07.jpg",
     "images/Free Creative Business Flatlay by Burst_08.jpg",
+    "images/NordWood-9703.jpg",
+    "images/NordWood-9710.jpg",
+    "images/NordWood-9732.jpg",
+    "images/NordWood-9743.jpg",
+    "images/NordWood-9756.jpg",
+    "images/NordWood-9762.jpg",
+    "images/NordWood-9795.jpg",
+    "images/NordWood-9811.jpg",
+    "images/NordWood-9826.jpg",
+    "images/NordWood-9852.jpg",
+    "images/NordWood-9878.jpg",
 ];
 
 
@@ -19,8 +30,9 @@ const sources = [
     DOM.gallery = document.querySelector(".gallery")
 
     const loader = new LoadImages(sources);
-    loader.onLoadImage = ({url, bytesLoaded, bytesLoadedAll, bytesAll, progressAll}) => {
-        console.warn({url, bytesLoaded, bytesLoadedAll, progressAll});
+    loader.onLoadImage = ({img, url, bytesLoaded, bytesLoadedAll, bytesAll, progressAll}) => {
+        console.warn({img, url, bytesLoaded, bytesLoadedAll, progressAll});
+        DOM.gallery.append(img);
     }
     loader.onProgressImage = ({url, progressImg, bytesLoadedImg, bytesLoadedAll, bytesAll, progressAll}) => {
         console.log({url, progressImg, bytesLoadedImg, bytesLoadedAll, progressAll});
