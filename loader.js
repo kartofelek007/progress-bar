@@ -99,9 +99,9 @@ export class LoadImages {
     }
 
     async startLoading() {
-        for (let url of this.sources) {
+        for await (let url of this.sources) {
             if (this.sourceVerified.findIndex(el => el.url === url) !== -1) {
-                this.loadImage(url);
+                await this.loadImage(url);
             }
         }
     }
