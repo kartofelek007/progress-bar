@@ -22,15 +22,16 @@ img {
 }
 
 .progress {
-    height: 25px;
+    height: 40px;
     background: #444;
     display: flex;
     border-radius: 2px;
     position: relative;
     width: 100%;
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
+    margin-bottom: 5px;
 }
 .progress-bar {
     background-image: radial-gradient(circle at 85% 1%, hsla(190,0%,93%,0.05) 0%, hsla(190,0%,93%,0.05) 96%,transparent 96%, transparent 100%),radial-gradient(circle at 14% 15%, hsla(190,0%,93%,0.05) 0%, hsla(190,0%,93%,0.05) 1%,transparent 1%, transparent 100%),radial-gradient(circle at 60% 90%, hsla(190,0%,93%,0.05) 0%, hsla(190,0%,93%,0.05) 20%,transparent 20%, transparent 100%),radial-gradient(circle at 79% 7%, hsla(190,0%,93%,0.05) 0%, hsla(190,0%,93%,0.05) 78%,transparent 78%, transparent 100%),radial-gradient(circle at 55% 65%, hsla(190,0%,93%,0.05) 0%, hsla(190,0%,93%,0.05) 52%,transparent 52%, transparent 100%),linear-gradient(135deg, rgb(37, 56, 222),rgb(96, 189, 244));
@@ -39,10 +40,33 @@ img {
 }
 .progress-bar-text {
     position: absolute;
-    left: 50%;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    left: 0;
+    width: 100%;
+    text-align: center;
     top: 50%;
     color: #fff;
-    transform: translate(-50%, -50%);
+    transform: translate(0, -50%);
     font-family: sans-serif;
     text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.progress-details {margin: 10px 0;}
+.progress-details .progress { height: 11px; font-size: 7px; font-weight: 500; }
+.progress-details .progress-bar {}
+.progress-details .progress-bar-text {}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

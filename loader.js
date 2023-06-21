@@ -2,12 +2,12 @@ export class LoadImages {
     constructor(sources) {
         this.sources = sources;
         this.sourceVerified = [];
-        this.sizeAll = 0;
-        this.sizeLoaded = 0;
         this.progress = 0;
-        this.sizeActual = 0;
+
         this.onProgressImage = () => {};
         this.onLoadImage = () => {};
+        this.beforeLoading = () => {};
+        this.afterLoading = () => {};
     }
 
     getFileSize(url) {
@@ -34,56 +34,90 @@ export class LoadImages {
         })
     }
 
-    async calculateEntireSize() {
+    async generateSources() {
         for (let url of this.sources) {
             let fileData = await this.getFileSize(url);
             if (fileData.size) {
-                this.sourceVerified.push({url, size: fileData.size});
+                this.sourceVerified.push({
+                    url,
+                    size: fileData.size,
+                });
                 this.sizeAll += fileData.size;
             }
         }
-        this.sizeActual = this.sizeAll;
-        this.sizeLoaded = this.sizeAll;
+    }
+
+    getAllDownload() {
+        if (!this.sourceVerified.length) return 0;
+        let size = 0;
+        for (let source of this.sourceVerified) {
+            size += source.download;
+        }
+        return size;
+    }
+
+    getAllSize() {
+        let size = 0;
+        for (let source of this.sourceVerified) {
+            size += source.size;
+        }
+        return size;
+    }
+
+    getVerifiedSource(url) {
+        return this.sourceVerified.find(el => el.url === url);
     }
 
     loadImage(url) {
+        const source = this.getVerifiedSource(url);
+        if (!source) Promise.reject(null);
+
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest();
-            let load = 0;
             xhr.responseType = "blob";
             xhr.open("get", url, true);
             xhr.onprogress = (event) => {
-                this.sizeActual = this.sizeLoaded - event.loaded;
+                source.download = event.loaded;
+
+                const actualAllDownload = this.getAllDownload();
+                const sizeAll = this.getAllSize();
+
                 this.onProgressImage({
                     url : url,
                     progressImg : event.loaded / event.total * 100,
                     bytesLoadedImg : event.loaded,
-                    bytesLoadedAll : this.sizeAll - this.sizeActual,
-                    bytesAll : this.sizeAll,
-                    progressAll : 100 - (this.sizeActual / this.sizeAll * 100)
+                    bytesLoadedAll : actualAllDownload,
+                    bytesAll : sizeAll,
+                    progressAll : actualAllDownload / sizeAll * 100,
+                    allFilesStatus : [...this.sourceVerified]
                 });
             };
             xhr.onload = (event) => {
                 const urlCreator = window.URL || window.webkitURL;
                 const url = urlCreator.createObjectURL(xhr.response);
-                this.sizeLoaded -= event.loaded;
                 const img = new Image();
                 img.src = url;
+
+                const actualAllDownload = this.getAllDownload();
+                const sizeAll = this.getAllSize();
+
                 this.onLoadImage({
                     img,
                     url,
                     bytesLoaded: event.loaded,
-                    bytesLoadedAll : this.sizeActual,
+                    bytesLoadedAll : actualAllDownload,
                     bytesAll : this.sizeAll,
-                    progressAll : 100 - (this.sizeActual / this.sizeAll * 100)
+                    progressAll : actualAllDownload / sizeAll * 100,
+                    allFilesStatus : [...this.sourceVerified]
                 });
                 this.onProgressImage({
                     url : url,
                     progressImg : event.loaded / event.total * 100,
                     bytesLoadedImg : event.loaded,
-                    bytesLoadedAll : this.sizeAll - this.sizeActual,
-                    bytesAll : this.sizeAll,
-                    progressAll : 100 - (this.sizeActual / this.sizeAll * 100)
+                    bytesLoadedAll : actualAllDownload,
+                    bytesAll : sizeAll,
+                    progressAll : actualAllDownload / sizeAll * 100,
+                    allFilesStatus : [...this.sourceVerified]
                 });
                 resolve(url);
             }
@@ -94,16 +128,27 @@ export class LoadImages {
         })
     }
 
-    async init() {
-        await this.calculateEntireSize();
+    async prepareLoading() {
+        await this.generateSources();
+        for (let file of this.sourceVerified) {
+            file.download = 0;
+        }
     }
 
-    async startLoading() {
-        for await (let url of this.sources) {
+    startLoading() {
+        this.beforeLoading({
+            bytesAll : this.sizeAll,
+            allFilesStatus : [...this.sourceVerified]
+        })
+        for (let url of this.sources) {
             if (this.sourceVerified.findIndex(el => el.url === url) !== -1) {
-                await this.loadImage(url);
+                this.loadImage(url);
             }
         }
+        this.afterLoading({
+            bytesAll : this.sizeAll,
+            allFilesStatus : [...this.sourceVerified]
+        })
     }
 }
 
