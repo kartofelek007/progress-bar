@@ -62,7 +62,7 @@ DOM.detail = document.querySelector(".progress-details");
         })
     }
     loader.afterLoading = ({bytesAll, allFilesStatus}) => {
-        console.log({bytesAll, allFileStatus})
+        console.log({bytesAll, allFilesStatus})
     }
 
     await loader.prepareLoading()
