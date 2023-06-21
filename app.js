@@ -38,7 +38,7 @@ DOM.detail = document.querySelector(".progress-details");
             text.classList.add("progress-bar-text");
             text.innerText = file.url;
             bar.append(progress);
-            progress.append(text);
+            bar.append(text);
             bar.dataset.url = file.url;
             DOM.detail.append(bar);
         })
