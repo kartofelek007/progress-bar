@@ -24,8 +24,8 @@ By default to download Instead of downloading the size of each file individually
     loader.generateSources = () => {
         for (let el of dataJSON) {
             this.sourceVerified.push({
-                url,
-                size
+                url: el.url,
+                size: el.size
             })
         }
     }
